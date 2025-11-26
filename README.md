@@ -1024,7 +1024,7 @@ This platform was inspired by the incredible potential of rural youth in Rwanda 
 
 **WhatsApp:** [+250 798 200 584](https://wa.me/250798200584)
 
-**Website:** [Tegura-Youth-Iniative]https://tyi-w843.onrender.com/
+**Website:** [[Tegura-Youth-Iniative](https://tyi-w843.onrender.com/)]
 
 **LinkedIn:** [linkedin.com/in/principie](https://www.linkedin.com/in/principie)
 
@@ -1188,7 +1188,7 @@ Track your impact:
 
 ---
 
-**��� Built By Principie, FOR Underprivileged Rural Youth**
+** Built By Principie, FOR Underprivileged Rural Youth**
 
 *Turning ideas into reality, one young entrepreneur at a time.*
 
