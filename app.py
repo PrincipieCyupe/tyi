@@ -30,7 +30,7 @@ else:
 
 app.config['SENDGRID_API_KEY'] = os.environ.get('SENDGRID_API_KEY')
 app.config['SENDGRID_FROM_EMAIL'] = os.environ.get('SENDGRID_FROM_EMAIL')
-app.config['SECRET_KEY'] = 'tegurasecretkey'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tegurasecretkey')
 SENDGRID_API_KEY = app.config['SENDGRID_API_KEY']
 SENDGRID_FROM_EMAIL = app.config['SENDGRID_FROM_EMAIL']
 # Cloudinary Configuration
@@ -246,6 +246,17 @@ class ActivityUpdate(db.Model):
     icon_color = db.Column(db.String(50), default='blue')  # blue, green, yellow, purple, red
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
+
+# Database initialization function
+def init_db():
+    """Initialize database tables on first deployment"""
+    with app.app_context():
+        try:
+            db.create_all()
+            print("Database tables created successfully!")
+            print("All tables are created.")
+        except Exception as e:
+            print(f"Error creating tables: {str(e)}")
 
 # Create form for signing up
 class SignupForm(FlaskForm):
