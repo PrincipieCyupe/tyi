@@ -8,7 +8,7 @@
 
 ---
 
-## ��� Table of Contents
+##Table of Contents
 
 1. [What is Tegura Youth Initiative?](#what-is-tegura-youth-initiative)
 2. [Why This Platform Exists](#why-this-platform-exists)
