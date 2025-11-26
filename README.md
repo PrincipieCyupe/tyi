@@ -27,7 +27,7 @@
 
 ---
 
-## ��� What is Tegura Youth Initiative?
+## What is Tegura Youth Initiative?
 
 Tegura Youth Initiative (TYI) is a comprehensive web platform designed to bridge the gap between rural youth entrepreneurship potential and actual business success in Rwanda. Built with Flask and modern web technologies, it provides a complete ecosystem for:
 
