@@ -2,7 +2,6 @@
 
 > **Empowering rural youth in Rwanda with entrepreneurship training, mentorship, and seed funding to build tomorrow's successful businesses.**
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-green.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-3.0.0-red.svg)](https://flask.palletsprojects.com/)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
