@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in - Tegura Youth Initiative</title>
+    <title>Resend Verification - Tegura Youth Initiative</title>
     <link rel="icon" href="{{ url_for('static', filename='images/Group 55.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
@@ -12,7 +12,8 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <img src="{{ url_for('static', filename='images/Group 55.png') }}" alt="Company logo" class="mx-auto h-10 w-auto" />
-    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Resend Verification Email</h2>
+    <p class="mt-2 text-center text-sm text-gray-400">Enter your email to receive a new verification link</p>
   </div>
   
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -27,55 +28,28 @@
       {% endif %}
     {% endwith %}
 
-    <!-- Resend Verification Link (shows when email not verified) -->
-    {% if show_resend %}
-    <div class="mb-4 rounded-lg p-4 bg-indigo-500 text-white text-center">
-      <p class="font-medium">Need a new verification email?</p>
-      <a href="{{ url_for('resend_verification', email=user_email) }}" class="underline font-semibold hover:text-gray-200">Click here to resend</a>
-    </div>
-    {% endif %}
-
-    <!-- Login Form -->
-    <form action="{{ url_for('login') }}" method="POST" class="space-y-6">
-      {{ form.hidden_tag() }}
-
+    <!-- Resend Verification Form -->
+    <form action="{{ url_for('resend_verification') }}" method="POST" class="space-y-6">
       <!-- Email Field -->
       <div>
-        {{ form.email.label(class="block text-sm/6 font-medium text-gray-100") }}
+        <label for="email" class="block text-sm/6 font-medium text-gray-100">Email Address</label>
         <div class="mt-2">
-          {{ form.email(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='Email Address') }}
-        </div>
-      </div>
-
-      <!-- Password Field with Forgot Password Link -->
-      <div>
-        <div class="flex items-center justify-between">
-          {{ form.password.label(class="block text-sm/6 font-medium text-gray-100") }}
-          <div class="text-sm">
-            <a href="{{ url_for('forgot_password') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
-          </div>
-        </div>
-        <div class="mt-2">
-          {{ form.password(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='Password') }}
+          <input id="email" name="email" type="email" value="{{ email }}" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" placeholder="your.email@example.com">
         </div>
       </div>
 
       <!-- Submit Button -->
       <div>
-        {{ form.submit(class="cursor-pointer flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500") }}
+        <button type="submit" class="cursor-pointer flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+          Send Verification Email
+        </button>
       </div>
     </form>
 
-    <!-- Register Link -->
+    <!-- Back to Login -->
     <p class="mt-10 text-center text-sm/6 text-gray-400">
-      Not registered yet?
-      <a href="{{ url_for('register') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Create account</a>
-    </p>
-
-    <!-- Admin Login Link -->
-    <p class="mt-4 text-center text-sm/6 text-gray-400">
-      Are you an admin?
-      <a href="{{ url_for('admin_login') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Admin login</a>
+      Remember your credentials?
+      <a href="{{ url_for('login') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Back to login</a>
     </p>
   </div>
 </div>
@@ -144,7 +118,7 @@
         setTimeout(function() {
           message.remove();
         }, 500);
-      }, 3000); // Auto-dismiss after 3 seconds
+      }, 3000);
     });
   });
 </script>

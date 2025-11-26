@@ -71,6 +71,10 @@ class TYI(db.Model, UserMixin):
     reset_token = db.Column(db.String(200), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
 
+    email_verified = db.Column(db.Boolean, default=False, nullable=False)
+    verification_token = db.Column(db.String(200), nullable=True)
+    verification_token_expiry = db.Column(db.DateTime, nullable=True)
+
     # relationships to be defined later
     courses = db.relationship('UserCourse', backref='user', lazy=True)
     applications = db.relationship('Application', backref='user', lazy=True)
@@ -418,6 +422,86 @@ def send_password_reset_email(user_email, reset_token):
         print(f"❌ Error sending reset email: {str(e)}")
         return False
 
+def send_verification_email(user_email, verification_token):
+    """Send email verification link via SendGrid"""
+    try:
+        # Find user
+        user = TYI.query.filter_by(email=user_email).first()
+        if not user:
+            return False
+        
+        # Generate verification link
+        verification_link = url_for('verify_email', token=verification_token, _external=True)
+        
+        email_subject = "Verify Your Email - Tegura Youth Initiative"
+        
+        email_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #6366f1; margin: 0;">Tegura Youth Initiative</h1>
+                </div>
+                
+                <div style="background-color: white; padding: 30px; border-radius: 8px;">
+                    <h2 style="color: #374151; margin-top: 0;">Welcome, {user.firstname}! 🎉</h2>
+                    
+                    <p>Thank you for registering with Tegura Youth Initiative!</p>
+                    
+                    <p>To complete your registration and access all features, please verify your email address by clicking the button below.</p>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="{verification_link}" style="background-color: #6366f1; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                            Verify Email Address
+                        </a>
+                    </div>
+                    
+                    <p style="color: #6b7280; font-size: 14px;">Or copy and paste this link into your browser:</p>
+                    <p style="background-color: #f3f4f6; padding: 10px; border-radius: 4px; word-break: break-all; font-size: 12px;">
+                        {verification_link}
+                    </p>
+                    
+                    <p style="color: #dc2626; font-weight: bold; margin-top: 20px;">⏰ This link will expire in 24 hours.</p>
+                    
+                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+                    
+                    <p style="color: #6b7280; font-size: 14px;">
+                        <strong>Didn't create an account?</strong><br>
+                        You can safely ignore this email. No account will be created without verification.
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px;">
+                    <p>© 2025 Tegura Youth Initiative. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Send email via SendGrid
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        
+        email_message = Mail(
+            from_email=SENDGRID_FROM_EMAIL,
+            to_emails=user_email,
+            subject=email_subject,
+            html_content=email_body
+        )
+        
+        response = sg.send(email_message)
+        
+        if response.status_code in [200, 201, 202]:
+            print(f"✅ Verification email sent to {user_email}")
+            return True
+        else:
+            print(f"⚠️ Failed to send verification email: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error sending verification email: {str(e)}")
+        return False
+
 @app.route('/', methods=['POST', 'GET'])
 def index_page():
     return render_template('index.html')
@@ -431,46 +515,130 @@ def login():
         user = TYI.query.filter_by(email=form.email.data).first()
         
         if user and user.check_password(form.password.data):
+            # Check if email is verified
+            if not user.email_verified:
+                flash('Please verify your email before logging in. Check your inbox for the verification link.', 'warning')
+                return render_template('login.html', form=form, show_resend=True, user_email=form.email.data)
+            
             login_user(user)
             flash('Logged in successfully!', 'success')
             return redirect(url_for('home'))
         else:
             flash('Invalid email or password. Please try again.', 'danger')
     
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, show_resend=False, user_email='')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = SignupForm()
     if form.validate_on_submit():
         try:
-            # Check if email already exists (redundant check for clarity)
+            # Check if email already exists
             existing_user = TYI.query.filter_by(email=form.email.data).first()
             if existing_user:
                 flash('Email address already exists! Please try a different email.', 'danger')
                 return render_template('register.html', form=form)
             
+            # Generate verification token
+            verification_token = generate_reset_token()  # Reuse the same token generation function
+            
+            # Create new user (unverified)
             user = TYI(
                 firstname=form.firstname.data,
                 lastname=form.lastname.data,
                 email=form.email.data,
-                pwd=form.password.data
+                pwd=form.password.data,
+                email_verified=False,
+                verification_token=verification_token,
+                verification_token_expiry=datetime.utcnow() + timedelta(hours=24)  # 24 hour expiry
             )
             db.session.add(user)
             db.session.commit()
-            flash('Account created successfully!', 'success')
+            
+            # Send verification email
+            if send_verification_email(form.email.data, verification_token):
+                flash('Account created! Please check your email to verify your account.', 'success')
+            else:
+                flash('Account created but verification email failed to send. Please contact support.', 'warning')
+            
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating account: {str(e)}', 'danger')
     else:
-        # NEW: Show validation errors as flash messages
+        # Show validation errors as flash messages
         if form.errors:
             for field, errors in form.errors.items():
                 for error in errors:
                     flash(f'{error}', 'danger')
     
     return render_template('register.html', form=form)
+
+@app.route('/verify-email/<token>')
+def verify_email(token):
+    """Verify user email with token"""
+    # Find user with this verification token
+    user = TYI.query.filter_by(verification_token=token).first()
+    
+    # Validate token exists
+    if not user:
+        flash('Invalid verification link.', 'danger')
+        return redirect(url_for('login'))
+    
+    # Check if already verified
+    if user.email_verified:
+        flash('Email already verified! You can log in.', 'info')
+        return redirect(url_for('login'))
+    
+    # Check if token expired
+    if user.verification_token_expiry and datetime.utcnow() > user.verification_token_expiry:
+        flash('Verification link has expired. Please request a new one.', 'danger')
+        return redirect(url_for('resend_verification', email=user.email))
+    
+    # Verify the email
+    user.email_verified = True
+    user.verification_token = None
+    user.verification_token_expiry = None
+    db.session.commit()
+    
+    flash('Email verified successfully! You can now log in.', 'success')
+    return redirect(url_for('login'))
+
+@app.route('/resend-verification', methods=['GET', 'POST'])
+def resend_verification():
+    """Resend verification email"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        
+        # Find user
+        user = TYI.query.filter_by(email=email).first()
+        
+        if user:
+            # Check if already verified
+            if user.email_verified:
+                flash('Email already verified! You can log in.', 'info')
+                return redirect(url_for('login'))
+            
+            # Generate new verification token
+            verification_token = generate_reset_token()
+            user.verification_token = verification_token
+            user.verification_token_expiry = datetime.utcnow() + timedelta(hours=24)
+            db.session.commit()
+            
+            # Send new verification email
+            if send_verification_email(email, verification_token):
+                flash('Verification email sent! Check your inbox.', 'success')
+            else:
+                flash('Error sending verification email. Please try again.', 'danger')
+        else:
+            # Don't reveal if email exists (security)
+            flash('If that email exists, a verification link has been sent.', 'info')
+        
+        return redirect(url_for('login'))
+    
+    # Get email from query parameter if available
+    email = request.args.get('email', '')
+    return render_template('resend_verification.html', email=email)
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
