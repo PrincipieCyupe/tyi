@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Apply - {{ opportunity.title }}
+{% endblock %}
+
+{% block leaderboard %}
+  Application Form
+{% endblock %}
+
+{% block text %}
+  Complete your application for {{ opportunity.title }}
+{% endblock %}
+
+{% block highlight %}
+  <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white">Home</a>
+  <a href="{{ url_for('education') }}" class="text-sm/6 font-semibold text-white">Education</a>
+  <a href="{{ url_for('application') }}" class="text-sm/6 font-semibold text-indigo-400">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="text-sm/6 font-semibold text-white">Leaderboard</a>       
+  <a href="{{ url_for('messages') }}" class="text-sm/6 font-semibold text-white">Messages</a>
+{% endblock %}
+
+{% block new %}
+  <a href="{{ url_for('home') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Home</a>
+  <a href="{{ url_for('education') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Education</a>
+  <a href="{{ url_for('application') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-indigo-400 bg-white/5">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Leaderboard</a>
+  <a href="{{ url_for('messages') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Messages</a>
+{% endblock %}
+
+{% block body %}
+<body class="bg-gray-900">
+
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-4xl px-6 lg:px-8">
+      
+      <a href="{{ url_for('opportunities') }}" class="text-indigo-400 hover:text-indigo-300 text-sm mb-6 inline-block">← Back to Opportunities</a>
+      
+      <!-- Opportunity Info -->
+      <div class="bg-gray-800 rounded-3xl p-8 mb-8">
+        <h1 class="text-3xl font-bold text-white mb-4">{{ opportunity.title }}</h1>
+        <p class="text-gray-300 mb-6">{{ opportunity.description }}</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {% if opportunity.prize_amount %}
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-gray-400">Prize Amount</p>
+                <p class="text-lg font-semibold text-white">{{ opportunity.prize_amount }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          <div class="flex items-center gap-3">
+            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400">Application Deadline</p>
+              <p class="text-lg font-semibold text-white">{{ opportunity.deadline.strftime('%B %d, %Y') }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+          <h3 class="text-white font-semibold mb-2">Requirements</h3>
+          <p class="text-sm text-gray-300 whitespace-pre-line">{{ opportunity.requirements }}</p>
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <div class="bg-gray-800 rounded-3xl p-8">
+        <h2 class="text-2xl font-bold text-white mb-6">Your Application</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mb-4 rounded-lg p-4 {% if category == 'success' %}bg-green-500 text-white{% else %}bg-red-500 text-white{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('apply_opportunity', opp_id=opportunity.id) }}" method="POST" class="space-y-6">
+          
+          <!-- Applicant Info -->
+          <div class="bg-gray-700 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Applicant Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                <input type="text" value="{{ current_user.get_full_name() }}" disabled class="w-full rounded-md bg-gray-600 border-gray-500 text-gray-400 px-3 py-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                <input type="email" value="{{ current_user.email }}" disabled class="w-full rounded-md bg-gray-600 border-gray-500 text-gray-400 px-3 py-2">
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Info -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Business Name *</label>
+            <input type="text" name="business_name" required placeholder="Enter your business name" class="w-full rounded-md bg-gray-700 border-gray-600 text-white px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Business Idea / Pitch *</label>
+            <textarea name="business_idea" rows="8" required placeholder="Describe your business idea, target market, and why you should be selected..." class="w-full rounded-md bg-gray-700 border-gray-600 text-white px-3 py-2 focus:ring-2 focus:ring-indigo-500"></textarea>
+            <p class="text-xs text-gray-500 mt-1">Be specific and detailed. This is your chance to stand out!</p>
+          </div>
+
+          <!-- Info Box -->
+          <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <h3 class="text-white font-semibold mb-1">Before You Submit</h3>
+                <p class="text-sm text-gray-300">Make sure all information is accurate. Once submitted, you cannot edit your application. Our team will review it and update you on the status.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex gap-4">
+            <button type="submit" class="flex-1 rounded-md bg-indigo-500 px-6 py-3 text-base font-semibold text-white hover:bg-indigo-400 transition">
+              Submit Application
+            </button>
+            <a href="{{ url_for('opportunities') }}" class="rounded-md bg-gray-700 px-6 py-3 text-base font-semibold text-white hover:bg-gray-600 transition">
+              Cancel
+            </a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
+</body>
+</html>

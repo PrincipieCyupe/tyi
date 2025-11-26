@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tegura Youth Initiative</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/Group 55.png') }}" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <style>
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Sponsor carousel */
+    .sponsor-carousel {
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sponsor-track {
+      display: flex;
+      animation: scroll 20s linear infinite;
+      gap: 2rem;
+    }
+
+    .sponsor-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Ripple effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Pulse animation for CTA buttons */
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+      }
+    }
+
+    .pulse-button {
+      animation: pulse 2s infinite;
+    }
+
+    /* Card hover lift effect */
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
+    <!--Hero Section-->
+  <div>
+      <div class="absolute inset-0 -z-20">
+        <img src="{{ url_for('static', filename='images/hero-image.jpg') }}" alt="" class="w-full h-full object-cover opacity-50">
+        <div class="absolute inset-0 bg-gray-900/70"></div>
+      </div>
+
+    <header class="absolute inset-x-0 top-0 z-50">
+
+    <nav aria-label="Global" class="flex items-center justify-between p-6 lg:px-8">
+      <div class="flex lg:flex-1">
+        <a href="{{ url_for('home') }}" class="-m-1.5 p-1.5">
+          <span class="sr-only">Tegura Youth Initiative</span>
+          <img src="{{ url_for('static', filename='images/Group 55.png') }}" alt="" class="h-8 w-auto" />
+        </a>
+      </div>
+      <div class="flex lg:hidden">
+        <button type="button" command="show-modal" commandfor="mobile-menu" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-200">
+          <span class="sr-only">Open main menu</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6" aria-hidden="true">
+            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a href="#aboutus" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">About our company</a>
+        <a href="#competition" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Competition</a>
+        <a href="#education" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Education</a>
+        <a href="#sponsor" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Sponsors</a>
+        <a href="#blog" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Blogs</a>
+        <a href="#contact" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Contact us</a>
+        <a href="#faq" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">FAQs</a>
+      </div>
+      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+        <a href="{{ url_for('login') }}" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">Log in <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </nav>
+
+    <el-dialog>
+      <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden">
+        <div tabindex="0" class="fixed inset-0 focus:outline-none">
+          <el-dialog-panel class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
+            <div class="flex items-center justify-between">
+              <a href="#" class="-m-1.5 p-1.5">
+                <span class="sr-only">Tegura Youth Initiative</span>
+                <img src="{{ url_for('static', filename='images/Group 55.png') }}" alt="" class="h-8 w-auto" />
+              </a>
+              <button type="button" command="close" commandfor="mobile-menu" class="-m-2.5 rounded-md p-2.5 text-gray-200">
+                <span class="sr-only">Close menu</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6" aria-hidden="true">
+                  <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <div class="mt-6 flow-root">
+              <div class="-my-6 divide-y divide-white/10">
+                <div class="space-y-2 py-6">
+                  <a href="#aboutus" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">About our company</a>
+                  <a href="#competition" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Competition</a>
+                  <a href="#education" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Education</a>
+                  <a href="#sponsor" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Sponsors</a>
+                  <a href="#blog" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Blogs</a>
+                  <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Contact us</a>
+                  <a href="#faq" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">FAQs</a>
+                </div>
+                <div class="py-6">
+                  <a href="{{ url_for('login') }}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5">Log in</a>
+                </div>
+              </div>
+            </div>
+          </el-dialog-panel>
+        </div>
+      </dialog>
+    </el-dialog>
+  </header>
+
+  <div class="relative isolate px-6 pt-14 lg:px-8">
+    <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+      <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+           class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
+    </div>
+
+    <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+      <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+        <div class="relative rounded-full px-3 py-1 text-sm/6 text-gray-400 ring-1 ring-white/10 hover:ring-white/20 transition">
+          Announcing our next round of funding. 
+          <a href="{{ url_for('opportunities') }}" class="font-semibold text-indigo-400">
+            <span aria-hidden="true" class="absolute inset-0"></span>Read more 
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <h1 class="text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl fade-in">
+          Turning Ideas into Real Businesses
+        </h1>
+        <p class="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8 fade-in">
+            Empowering rural youth in Rwanda with entrepreneurship training, mentorship, and<br>seed funding to build tomorrow's successful businesses.
+        </p>
+        <div class="mt-10 flex items-center justify-center gap-x-6 fade-in">
+          <a href="{{ url_for('opportunities') }}" class="ripple pulse-button rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition">
+            Join the Competition
+          </a>
+          <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">
+            Learn more <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div aria-hidden="true" class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
+      <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+           class="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"></div>
+    </div>
+  </div>
+
+<!-- Stats Section -->
+<div class="bg-gray-900 py-16 sm:py-24">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="fade-in text-center">
+        <div class="text-5xl font-bold text-indigo-400" data-count="500">0</div>
+        <div class="mt-2 text-sm text-gray-400">Youth Trained</div>
+      </div>
+      <div class="fade-in text-center">
+        <div class="text-5xl font-bold text-indigo-400" data-count="50">0</div>
+        <div class="mt-2 text-sm text-gray-400">Businesses Launched</div>
+      </div>
+      <div class="fade-in text-center">
+        <div class="text-5xl font-bold text-indigo-400" data-count="100">0</div>
+        <div class="mt-2 text-sm text-gray-400">Million RWF Funded</div>
+      </div>
+      <div class="fade-in text-center">
+        <div class="text-5xl font-bold text-indigo-400" data-count="30">0</div>
+        <div class="mt-2 text-sm text-gray-400">Partner Organizations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--About our company section-->
+  <div id="aboutus">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl lg:text-center fade-in">
+      <h2 class="text-base/7 font-semibold text-indigo-400">About Tegura Youth Initiative</h2>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl lg:text-balance">Everything you need to know about our platform</p>
+      <p class="mt-6 text-lg/8 text-gray-300">We empower rural youth across Rwanda with the training, mentorship, and seed funding needed to transform innovative ideas into sustainable businesses. Our comprehensive program bridges the gap between potential and success.</p>
+    </div>
+    <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
+      <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+        <div class="relative pl-16 fade-in hover-lift">
+          <dt class="text-base/7 font-semibold text-white">
+            <div class="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg bg-indigo-500">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-white">
+                <img src="{{ url_for('static', filename='images/training.png') }}" alt="" class="h-8 w-auto" />
+              </svg>
+            </div>
+            Training
+          </dt>
+          <dd class="mt-2 text-base/7 text-gray-400">Comprehensive entrepreneurship courses and skill development programs</dd>
+        </div>
+        <div class="relative pl-16 fade-in hover-lift">
+          <dt class="text-base/7 font-semibold text-white">
+            <div class="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg bg-indigo-500">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-white">
+                <img src="{{ url_for('static', filename='images/menttor.png') }}" alt="" class="h-8 w-auto" />
+              </svg>
+            </div>
+            Mentorship
+          </dt>
+          <dd class="mt-2 text-base/7 text-gray-400">One-on-one guidance from successful business leaders and industry experts</dd>
+        </div>
+        <div class="relative pl-16 fade-in hover-lift">
+          <dt class="text-base/7 font-semibold text-white">
+            <div class="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg bg-indigo-500">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-white">
+                <img src="{{ url_for('static', filename='images/fund.png') }}" alt="" class="h-8 w-auto" />
+              </svg>
+            </div>
+            Funding
+          </dt>
+          <dd class="mt-2 text-base/7 text-gray-400">Seed funding opportunities to turn your validated ideas into real businesses</dd>
+        </div>
+        <div class="relative pl-16 fade-in hover-lift">
+          <dt class="text-base/7 font-semibold text-white">
+            <div class="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg bg-indigo-500">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-white">
+                <img src="{{ url_for('static', filename='images/suppo.png') }}" alt="" class="h-8 w-auto" />
+            </svg>
+            </div>
+            Long lasting support
+          </dt>
+          <dd class="mt-2 text-base/7 text-gray-400">Continued support for the winners project from scratch to the stage where you start making money.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<div class="bg-gray-900 mt-24">
+  <div class="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+    <div class="relative isolate overflow-hidden bg-gray-800 px-6 pt-16 after:pointer-events-none after:absolute after:inset-0 after:inset-ring after:inset-ring-white/10 sm:rounded-3xl sm:px-16 after:sm:rounded-3xl md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0 fade-in">
+      <svg viewBox="0 0 1024 1024" aria-hidden="true" class="absolute top-1/2 left-1/2 -z-10 size-256 -translate-y-1/2 mask-[radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0">
+        <circle r="512" cx="512" cy="512" fill="url(#759c1415-0410-454c-8f7c-9a820de03641)" fill-opacity="0.7" />
+        <defs>
+          <radialGradient id="759c1415-0410-454c-8f7c-9a820de03641">
+            <stop stop-color="#7775D6" />
+            <stop offset="1" stop-color="#E935C1" />
+          </radialGradient>
+        </defs>
+      </svg>
+      <div class="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
+        <h2 class="text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">Get funds for your startup. Compete to win prize and turn your idea into reality.</h2>
+        <p class="mt-6 text-lg/8 text-pretty text-gray-300">
+            Tegura Youth Initiative offers 100,000 RWF in seed funding to help rural youth entrepreneurs launch and grow their businesses. Through our competition, you'll gain practical skills, expert mentorship, and the financial support needed to transform your vision into a thriving enterprise.
+        </p>
+        <div class="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
+          <a href="{{ url_for('login') }}" class="ripple rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition">
+            Get started
+          </a>
+          <a href="{{ url_for('login') }}" class="text-sm/6 font-semibold text-white hover:text-indigo-400 transition">
+            Learn more <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+      <div class="relative mt-16 h-80 lg:mt-8">
+        <img width="1824" height="1080" src="{{ url_for('static', filename='images/new.png') }}" alt="App screenshot" class="absolute top-16 left-0 w-228 max-w-none rounded-md bg-white/5 ring-1 ring-white/10" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--How it works section-->
+
+<div class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">How it works</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Our simple 4-step process guides you from idea to business launch
+    </p>
+
+    <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5 place-items-center">
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-3">Register</h3>
+        <p class="text-gray-400 text-sm mb-8">
+          Sign up for the competition and complete your profile with your business idea.
+          Tell us what inspires you, your goals, and the kind of impact you want to create so we can better support your journey toward success.
+        </p>
+        <img 
+          src="{{ url_for('static', filename='images/register.png') }}" 
+          alt="Register"
+          class="w-48 h-48 sm:w-56 sm:h-56 object-cover rounded-xl"
+        >
+      </div>
+
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-3">Learn & Train</h3>
+        <p class="text-gray-400 text-sm mb-8">
+          Access our training modules and mentorship sessions from industry experts.
+          Learn about entrepreneurship, business planning, leadership, and marketing through engaging, practical lessons designed to strengthen your confidence and prepare you to build a sustainable business.
+        </p>
+        <img 
+          src="{{ url_for('static', filename='images/education.png') }}" 
+          alt="Learn & Train"
+          class="w-48 h-48 sm:w-56 sm:h-56 object-cover rounded-xl"
+        >
+      </div>
+
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-3">Compete & Pitch</h3>
+        <p class="text-gray-400 text-sm mb-8">
+          Present your refined business plan to our expert judges for feedback and funding.
+          Share your vision, demonstrate your creativity, and gain valuable insights from professionals who will guide you in improving your project for real-world success.
+        </p>
+        <img 
+          src="{{ url_for('static', filename='images/candw.png') }}" 
+          alt="Compete & Pitch"
+          class="w-48 h-48 sm:w-56 sm:h-56 object-cover rounded-xl"
+        >
+      </div>
+
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-3">Launch Your Business</h3>
+        <p class="text-gray-400 text-sm mb-8">
+          Receive funding and ongoing support to bring your business idea to life.
+          You'll gain access to a community of mentors, networking opportunities, and resources that will help you grow your idea into a real, impactful venture.
+        </p>
+        <img 
+          src="{{ url_for('static', filename='images/land.png') }}" 
+          alt="Launch Your Business"
+          class="w-48 h-48 sm:w-56 sm:h-56 object-cover rounded-xl"
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Competition Details Section -->
+
+<div id="competition" class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">Competition Details</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Everything you need to know about participating in our entrepreneurship competition
+    </p>
+
+    <div class="mt-16 grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-16 place-items-center">
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Entry Fee</h3>
+        <p class="text-gray-400 text-sm">5,000 RWF<br>One-time registration fee</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Prize Pool</h3>
+        <p class="text-gray-400 text-sm">100,000 RWF<br>Seed funding for winners</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Duration</h3>
+        <p class="text-gray-400 text-sm">3 Months<br>Complete program timeline</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Applications</h3>
+        <p class="text-gray-400 text-sm">Open Now<br>Rolling admissions</p>
+      </div>
+    </div>
+
+    <div class="mt-20 max-w-4xl mx-auto">
+      <h3 class="text-2xl font-semibold text-white text-center mb-10 fade-in">Competition Timeline</h3>
+      <div class="space-y-8">
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-800 rounded-3xl p-6 shadow-sm hover-lift fade-in">
+          <div class="text-white font-semibold">Registration</div>
+          <div class="text-gray-400 text-sm sm:text-right">Week 1-2<br>Open</div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-800 rounded-3xl p-6 shadow-sm hover-lift fade-in">
+          <div class="text-white font-semibold">Training Phase</div>
+          <div class="text-gray-400 text-sm sm:text-right">Week 3-8<br>Upcoming</div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-800 rounded-3xl p-6 shadow-sm hover-lift fade-in">
+          <div class="text-white font-semibold">Pitch Preparation</div>
+          <div class="text-gray-400 text-sm sm:text-right">Week 9-10<br>Upcoming</div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-800 rounded-3xl p-6 shadow-sm hover-lift fade-in">
+          <div class="text-white font-semibold">Final Pitches</div>
+          <div class="text-gray-400 text-sm sm:text-right">Week 11<br>Upcoming</div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-800 rounded-3xl p-6 shadow-sm hover-lift fade-in">
+          <div class="text-white font-semibold">Winner Announcement</div>
+          <div class="text-gray-400 text-sm sm:text-right">Week 12<br>Upcoming</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Education Hub Section -->
+
+<div id="education" class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">Education Hub</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Access world-class entrepreneurship education designed specifically for rural youth in Rwanda
+    </p>
+
+    <!-- Courses Grid -->
+
+    <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-16">
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Business Plan Development</h3>
+        <p class="text-gray-400 text-sm mb-2">4 weeks | Beginner</p>
+        <p class="text-gray-300 text-sm">Learn to create compelling business plans that attract investors.</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Financial Management</h3>
+        <p class="text-gray-400 text-sm mb-2">3 weeks | Intermediate</p>
+        <p class="text-gray-300 text-sm">Master budgeting, cash flow, and financial planning for startups.</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Marketing & Customer Acquisition</h3>
+        <p class="text-gray-400 text-sm mb-2">3 weeks | Beginner</p>
+        <p class="text-gray-300 text-sm">Strategies to reach and retain customers in rural markets.</p>
+      </div>
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white mb-2">Certificates & Recognition</h3>
+        <p class="text-gray-400 text-sm mb-2">Industry-recognized certificates & digital badges</p>
+        <p class="text-gray-300 text-sm">Proof of entrepreneurial competency for investors and LinkedIn profiles.</p>
+      </div>
+    </div>
+
+    <div class="mt-20 fade-in">
+      <h3 class="text-2xl font-semibold text-white text-center mb-6">Offline Bootcamps</h3>
+      <ul class="space-y-4 text-gray-300 max-w-2xl mx-auto text-center list-disc list-inside">
+        <li>Monthly regional bootcamps</li>
+        <li>Networking with local entrepreneurs</li>
+        <li>Practical workshops and exercises</li>
+      </ul>
+      <div class="mt-8 flex justify-center">
+        <a href="{{ url_for('login') }}" class="ripple rounded-md bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-indigo-400 transition">
+          Explore All Courses
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Stories & Leaderboard -->
+
+<div class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">Success Stories & Leaderboard</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Meet the entrepreneurs who turned their ideas into thriving businesses through TYI
+    </p>
+
+    <!-- Leaderboard Cards -->
+
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-16 gap-y-16">
+      <!-- Card 1 -->
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white">#1 Marie Uwimana</h3>
+        <p class="text-indigo-400 font-medium">Agri-Solutions Rwanda</p>
+        <p class="mt-2 text-gray-400 text-sm">Nyagatare • Developed an innovative irrigation system for small-scale farmers</p>
+        <p class="mt-2 text-yellow-400 font-semibold text-lg">4.9 | 100,000 RWF</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white">#2 Jean Baptiste</h3>
+        <p class="text-indigo-400 font-medium">EcoTech Rwanda</p>
+        <p class="mt-2 text-gray-400 text-sm">Musanze • Created solar-powered charging stations for rural communities</p>
+        <p class="mt-2 text-yellow-400 font-semibold text-lg">4.8 | 75,000 RWF</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white">#3 Grace Mukamana</h3>
+        <p class="text-indigo-400 font-medium">Rural Connect</p>
+        <p class="mt-2 text-gray-400 text-sm">Kamonyi • Built a mobile platform connecting rural producers with urban markets</p>
+        <p class="mt-2 text-yellow-400 font-semibold text-lg">4.7 | 50,000 RWF</p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="bg-gray-800 rounded-3xl shadow-sm p-10 flex flex-col items-center text-center hover-lift fade-in">
+        <h3 class="text-lg font-semibold text-white">#4 Paul Nzeyimana</h3>
+        <p class="text-indigo-400 font-medium">Smart Farm Solutions</p>
+        <p class="mt-2 text-gray-400 text-sm">Ngoma • Developed IoT sensors for crop monitoring and yield optimization</p>
+        <p class="mt-2 text-yellow-400 font-semibold text-lg">4.6 | 25,000 RWF</p>
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div class="bg-gray-800 p-8 rounded-3xl shadow hover-lift fade-in">
+        <p class="text-gray-300 italic">"TYI transformed my farming idea into a real business. The mentorship and funding helped me serve over 200 farmers in my district."</p>
+        <p class="mt-4 font-semibold text-white">Marie Uwimana</p>
+        <p class="text-indigo-400">Agri-Solutions Rwanda</p>
+      </div>
+      <div class="bg-gray-800 p-8 rounded-3xl shadow hover-lift fade-in">
+        <p class="text-gray-300 italic">"The training program gave me the confidence to pitch my solar solution. Now I'm creating jobs while solving energy problems in rural areas."</p>
+        <p class="mt-4 font-semibold text-white">Jean Baptiste</p>
+        <p class="text-indigo-400">EcoTech Rwanda</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sponsors & Partners -->
+<div id="sponsor" class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">Sponsors & Partners</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Your brand can fuel the next generation of Rwandan entrepreneurs
+    </p>
+
+    <!-- Animated Sponsor Carousel -->
+    <div class="mt-16 sponsor-carousel overflow-hidden fade-in">
+      <div class="sponsor-track">
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">MINICT</p>
+          <p class="text-gray-400 text-sm text-center">Government Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">BRD</p>
+          <p class="text-gray-400 text-sm text-center">Financial Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">Kigali Innovation City</p>
+          <p class="text-gray-400 text-sm text-center">Technology Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">YouthConnekt</p>
+          <p class="text-gray-400 text-sm text-center">Youth Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">African Development Bank</p>
+          <p class="text-gray-400 text-sm text-center">Development Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">Tony Elumelu Foundation</p>
+          <p class="text-gray-400 text-sm text-center">Entrepreneurship Partner</p>
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">MINICT</p>
+          <p class="text-gray-400 text-sm text-center">Government Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">BRD</p>
+          <p class="text-gray-400 text-sm text-center">Financial Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">Kigali Innovation City</p>
+          <p class="text-gray-400 text-sm text-center">Technology Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">YouthConnekt</p>
+          <p class="text-gray-400 text-sm text-center">Youth Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">African Development Bank</p>
+          <p class="text-gray-400 text-sm text-center">Development Partner</p>
+        </div>
+        <div class="bg-gray-800 rounded-3xl p-6 shadow hover:shadow-lg transition min-w-[200px]">
+          <p class="font-semibold text-white text-center">Tony Elumelu Foundation</p>
+          <p class="text-gray-400 text-sm text-center">Entrepreneurship Partner</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partnership Benefits -->
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 text-center text-gray-300">
+      <div class="fade-in">
+        <h4 class="text-white font-semibold text-xl mb-2">Brand Visibility</h4>
+        <p>Showcase your brand to thousands of ambitious young entrepreneurs</p>
+      </div>
+      <div class="fade-in">
+        <h4 class="text-white font-semibold text-xl mb-2">Community Impact</h4>
+        <p>Drive meaningful change in rural communities across Rwanda</p>
+      </div>
+      <div class="fade-in">
+        <h4 class="text-white font-semibold text-xl mb-2">Talent Pipeline</h4>
+        <p>Access early-stage talent and innovative business solutions</p>
+      </div>
+      <div class="fade-in">
+        <h4 class="text-white font-semibold text-xl mb-2">Partnership Opportunities</h4>
+        <p>Collaborate with emerging businesses aligned with your values</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+
+    <div class="mt-12 flex flex-col items-center gap-4 fade-in">
+      <a href="#contact" class="ripple rounded-md bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-indigo-400 transition">
+        Become a Sponsor
+      </a>
+      <a href="#contact" class="rounded-md border border-indigo-500 px-6 py-3 text-sm font-semibold text-indigo-400 hover:bg-indigo-700 transition">
+        Download Sponsorship Package
+      </a>
+    </div>
+  </div>
+</div>
+
+<!--Blog Section -->
+
+<div id="blog" class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">From the Blog</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Learn how to grow your business with our expert advice
+    </p>
+
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      <!-- Blog Card 1 -->
+
+      <div class="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover-lift fade-in">
+        <img src="{{ url_for('static', filename='images/5ways.png') }}" alt="Boost your conversion rate" class="w-full h-80 object-cover">
+        <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
+          <p class="text-gray-300 text-sm">Mar 16, 2025 • Principie Cyubahiro</p>
+          <h3 class="mt-2 text-white text-xl font-semibold">5 Easy Ways Rural Youth Can Start a Business Today</h3>
+        </div>
+      </div>
+
+      <!-- Blog Card 2 -->
+
+      <div class="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover-lift fade-in">
+        <img src="{{ url_for('static', filename='images/blog1.png') }}" alt="SEO to drive sales" class="w-full h-80 object-cover">
+        <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
+          <p class="text-gray-300 text-sm">June 10, 2025 • Mugisha Kayishema</p>
+          <h3 class="mt-2 text-white text-xl font-semibold">From Idea to Impact: How to Turn Your Business Plan into Reality</h3>
+        </div>
+      </div>
+
+      <!-- Blog Card 3 -->
+
+      <div class="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover-lift fade-in">
+        <img src="{{ url_for('static', filename='images/s2s.jpg') }}" alt="Improve your customer experience" class="w-full h-80 object-cover">
+        <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
+          <p class="text-gray-300 text-sm">Aug 12, 2025 • Principie Cyubahiro </p>
+          <h3 class="mt-2 text-white text-xl font-semibold">Secrets to Growing a Small Startup in Rural Rwanda</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--Contact Us section-->
+
+<div id="contact" class="isolate bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
+  <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+    <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" class="relative left-1/2 -z-10 aspect-1155/678 w-144.5 max-w-none -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-40rem)] sm:w-288.75"></div>
+  </div>
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 class="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl fade-in">Contact Us</h2>
+    <p class="mt-2 text-lg/8 text-gray-400 fade-in">Get in touch with our team for any inquiries or partnership opportunities.</p>
+  </div>
+  <form action="{{ url_for('contact_form') }}" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+      <div class="fade-in">
+        <label for="first-name" class="block text-sm/6 font-semibold text-white">First name</label>
+        <div class="mt-2.5">
+          <input id="first-name" type="text" name="first-name" autocomplete="given-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+        </div>
+      </div>
+      <div class="fade-in">
+        <label for="last-name" class="block text-sm/6 font-semibold text-white">Last name</label>
+        <div class="mt-2.5">
+          <input id="last-name" type="text" name="last-name" autocomplete="family-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+        </div>
+      </div>
+      <div class="sm:col-span-2 fade-in">
+        <label for="company" class="block text-sm/6 font-semibold text-white">Company</label>
+        <div class="mt-2.5">
+          <input id="company" type="text" name="company" autocomplete="organization" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+        </div>
+      </div>
+      <div class="sm:col-span-2 fade-in">
+        <label for="email" class="block text-sm/6 font-semibold text-white">Email</label>
+        <div class="mt-2.5">
+          <input id="email" type="email" name="email" autocomplete="email" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+        </div>
+      </div>
+      <div class="sm:col-span-2 fade-in">
+        <label for="phone-number" class="block text-sm/6 font-semibold text-white">Phone number</label>
+        <div class="mt-2.5">
+          <input id="phone-number" type="text" name="phone-number" placeholder="+250 XXX XXX XXX" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+        </div>
+      </div>
+      <div class="sm:col-span-2 fade-in">
+        <label for="message" class="block text-sm/6 font-semibold text-white">Message</label>
+        <div class="mt-2.5">
+          <textarea id="message" name="message" rows="4" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"></textarea>
+        </div>
+      </div>
+      <div class="flex gap-x-4 sm:col-span-2 fade-in">
+        <div class="flex h-6 items-center">
+          <input id="agree-to-policies" type="checkbox" name="agree-to-policies" class="w-4 h-4 rounded border-gray-600 bg-white/5 text-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <label for="agree-to-policies" class="text-sm/6 text-gray-400">
+          By selecting this, you agree to our
+          <a href="{{ url_for('home') }}" class="font-semibold whitespace-nowrap text-indigo-400">privacy policy</a>.
+        </label>
+      </div>
+    </div>
+    <div class="mt-10 fade-in">
+      <button type="submit" class="ripple block w-full rounded-md bg-indigo-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition">Let's talk</button>
+    </div>
+  </form>
+</div>
+
+<!-- FAQ Section -->
+
+<div id="faq" class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-base font-semibold text-indigo-400 fade-in">Frequently Asked Questions</h2>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl fade-in">
+      Find answers to common questions about participating in or sponsoring TYI
+    </p>
+
+    <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <!-- For Participants FAQS section -->
+      <div class="fade-in">
+        <h3 class="text-xl font-semibold text-white mb-6">For Participants</h3>
+        <ul class="space-y-6 text-gray-300">
+          <li>
+            <p class="font-semibold text-white">What is the eligibility criteria for the competition?</p>
+            <p class="mt-1">You must be between 18-30 years old, a Rwandan citizen or resident, have a business idea or early-stage business, and be committed to participating in the full program duration.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Do I need to pay the entry fee upfront?</p>
+            <p class="mt-1">Yes, the 5,000 RWF entry fee is required during registration to secure your spot in the competition and access to training materials.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">What if I don't have a fully developed business idea?</p>
+            <p class="mt-1">That's perfectly fine! Our training program will help you refine and develop your idea. Many successful participants started with just a concept.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Is the training conducted in English or Kinyarwanda?</p>
+            <p class="mt-1">All training sessions are conducted in both Kinyarwanda and English to ensure accessibility for all participants.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Can I participate if I'm from urban areas?</p>
+            <p class="mt-1">While our focus is on rural youth, urban participants with ideas that serve rural communities are welcome to apply.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">What happens if I don't win the main prize?</p>
+            <p class="mt-1">All participants receive valuable training, networking opportunities, and certificates. Many participants have secured funding and partnerships even without winning the main prize.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">How is the winner selected?</p>
+            <p class="mt-1">Winners are selected based on business viability, innovation, potential impact on rural communities, and presentation quality by a panel of expert judges.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Do I retain ownership of my business idea?</p>
+            <p class="mt-1">Yes, you retain full ownership of your intellectual property. TYI does not claim any ownership rights to your business ideas or ventures.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Is there ongoing support after the competition?</p>
+            <p class="mt-1">Yes, winners receive 6 months of post-competition mentorship, and all participants can access our alumni network and additional resources.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Can I apply with a team?</p>
+            <p class="mt-1">Yes, teams of up to 3 members are allowed, but only one person needs to pay the entry fee and all team members must meet eligibility criteria.</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- For Sponsors FAQs section -->
+      <div class="fade-in">
+        <h3 class="text-xl font-semibold text-white mb-6">For Sponsors</h3>
+        <ul class="space-y-6 text-gray-300">
+          <li>
+            <p class="font-semibold text-white">What sponsorship packages are available?</p>
+            <p class="mt-1">We offer Platinum (1M+ RWF), Gold (500K RWF), Silver (200K RWF), and Bronze (100K RWF) packages, each with different benefits and visibility levels.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">How will our brand be promoted during the competition?</p>
+            <p class="mt-1">Sponsors receive logo placement on marketing materials, social media mentions, website recognition, and speaking opportunities at events based on sponsorship level.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Can we provide mentors from our organization?</p>
+            <p class="mt-1">Absolutely! We welcome mentors from sponsor organizations. This provides additional value to participants and deeper engagement for sponsors.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">What is the demographic of competition participants?</p>
+            <p class="mt-1">Participants are primarily 18-30 years old from rural areas across Rwanda, with diverse educational backgrounds and business interests spanning agriculture, technology, and services.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">How do you measure the impact of sponsorship?</p>
+            <p class="mt-1">We provide detailed reports including participant numbers, social media reach, business outcomes, jobs created, and community impact metrics.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Can we sponsor specific categories or prizes?</p>
+            <p class="mt-1">Yes, sponsors can create category-specific prizes (e.g., 'Best Agribusiness Idea' or 'Most Innovative Tech Solution') with dedicated recognition.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">What is the timeline for sponsorship activation?</p>
+            <p class="mt-1">Sponsorship activation begins immediately upon agreement, with maximum visibility during the 3-month competition period and ongoing recognition for annual sponsors.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Do you offer CSR partnership opportunities?</p>
+            <p class="mt-1">Yes, we develop customized CSR partnerships that align with your company's social impact goals and provide measurable community development outcomes.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">Can international organizations sponsor?</p>
+            <p class="mt-1">Yes, we welcome international sponsors and can accommodate various payment methods and currencies to facilitate global partnerships.</p>
+          </li>
+          <li>
+            <p class="font-semibold text-white">What reporting do sponsors receive?</p>
+            <p class="mt-1">Sponsors receive monthly progress reports, final impact reports with detailed metrics, participant testimonials, and success stories of funded businesses.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Footer Section-->
+
+<footer class="bg-gray-900 text-gray-300 py-16">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12 items-center fade-in">
+      <div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white">Ready to Start Your Journey?</h2>
+        <p class="mt-4 text-gray-300 max-w-lg">
+          Join thousands of ambitious youth transforming Rwanda's entrepreneurial landscape. Whether you're a young innovator with a game-changing idea or an organization ready to invest in the future, your journey starts here.
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-4 mt-6 lg:mt-0">
+        <a href="{{ url_for('login') }}" class="ripple px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-center hover:bg-indigo-500 transition">Apply Now</a>
+        <a href="#contact" class="px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold text-center hover:bg-gray-600 transition">Sponsor Now</a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 border-t border-gray-700 pt-12">
+      <div>
+        <h3 class="text-white font-semibold mb-4">Have questions? We're here to help.</h3>
+        <p>Email: <a href="mailto:admin@principie.tech" class="hover:text-white transition">admin@principie.tech</a></p>
+        <p>Phone: <a href="https://wa.me/250798200584" class="hover:text-white transition">+250 798 200 584</a></p>
+      </div>
+
+      <div>
+        <h3 class="text-white font-semibold mb-4">Solutions</h3>
+        <ul class="space-y-2">
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Marketing</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Analytics</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Automation</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Commerce</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Insights</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-white font-semibold mb-4">Support</h3>
+        <ul class="space-y-2">
+          <li><a href="#contact" class="hover:text-white transition">Submit ticket via contact form</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Documentation</a></li>
+          <li><a href="{{ url_for('index_page') }}" class="hover:text-white transition">Guides</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-white font-semibold mb-4">Company</h3>
+        <ul class="space-y-2">
+          <li><a href="/" class="hover:text-white transition">About</a></li>
+          <li><a href="#blog" class="hover:text-white transition">Blog</a></li>
+          <li><a href="#" class="hover:text-white transition">Jobs</a></li>
+          <li><a href="#" class="hover:text-white transition">Press</a></li>
+          <li><a href="#" class="hover:text-white transition">Legal</a></li>
+          <li><a href="#" class="hover:text-white transition">Privacy policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-6 flex flex-col sm:flex-row justify-between items-center">
+      <div class="flex space-x-4 mb-4 sm:mb-0">
+        <a href="https://www.facebook.com/cyubahiro.principie" class="hover:text-white transition">Facebook</a>
+        <a href="https://www.instagram.com/cyubahiro_principie/?hl=en" class="hover:text-white transition">Instagram</a>
+        <a href="https://www.linkedin.com/in/principie" class="hover:text-white transition">LinkedIn</a>
+        <a href="https://www.github.com/PrincipieCyupe" class="hover:text-white transition">GitHub</a>
+        <a href="https://www.youtube.com/@mindfulsolutionsALU" class="hover:text-white transition">YouTube</a>
+      </div>
+
+      <p class="text-gray-500 text-sm">&copy; 2025 Tegura Youth Initiative. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- JavaScript for Animations -->
+<script>
+  // Intersection Observer for scroll-triggered animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Observe all fade-in elements
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Counter animation for stats
+  function animateCounter(element) {
+    const target = parseInt(element.getAttribute('data-count'));
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        element.textContent = target + '+';
+        clearInterval(timer);
+      } else {
+        element.textContent = Math.floor(current) + '+';
+      }
+    }, 16);
+  }
+
+  // Trigger counter animation when stats section is visible
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counters = entry.target.querySelectorAll('[data-count]');
+        counters.forEach(counter => {
+          if (!counter.classList.contains('animated')) {
+            counter.classList.add('animated');
+            animateCounter(counter);
+          }
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsSection = document.querySelector('[data-count]')?.closest('.bg-gray-900.py-16');
+  if (statsSection) statsObserver.observe(statsSection);
+
+  // Smooth scroll for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href !== '#') {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

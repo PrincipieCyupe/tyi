@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ module.title }} - {{ course.title }}
+{% endblock %}
+
+{% block leaderboard %}
+  {{ module.title }}
+{% endblock %}
+
+{% block text %}
+  Module {{ module.module_number }} of {{ course.total_modules }}
+{% endblock %}
+
+{% block highlight %}
+  <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white">Home</a>
+  <a href="{{ url_for('education') }}" class="text-sm/6 font-semibold text-indigo-400">Education</a>
+  <a href="{{ url_for('application') }}" class="text-sm/6 font-semibold text-white">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="text-sm/6 font-semibold text-white">Leaderboard</a>       
+  <a href="{{ url_for('messages') }}" class="text-sm/6 font-semibold text-white">Messages</a>
+{% endblock %}
+
+{% block new %}
+  <a href="{{ url_for('home') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Home</a>
+  <a href="{{ url_for('education') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-indigo-400 bg-white/5">Education</a>
+  <a href="{{ url_for('application') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Leaderboard</a>
+  <a href="{{ url_for('messages') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Messages</a>
+{% endblock %}
+
+{% block body %}
+<body class="bg-gray-900">
+
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-4xl px-6 lg:px-8">
+      
+      <a href="{{ url_for('view_course', course_id=course.id) }}" class="text-indigo-400 hover:text-indigo-300 text-sm mb-6 inline-block">← Back to {{ course.title }}</a>
+      
+      <!-- Module Header -->
+      <div class="bg-gray-800 rounded-3xl p-8 mb-8">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500 text-white font-bold text-lg">
+            {{ module.module_number }}
+          </span>
+          <div>
+            <h1 class="text-3xl font-bold text-white">{{ module.title }}</h1>
+            <p class="text-gray-400">{{ course.title }}</p>
+          </div>
+        </div>
+        
+        {% if progress %}
+          <div class="flex items-center gap-4 mt-4">
+            {% if progress.status == 'completed' %}
+              <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-sm font-semibold text-green-400">✓ Completed</span>
+            {% elif progress.status == 'in_progress' %}
+              <span class="inline-flex items-center rounded-full bg-blue-500/10 px-3 py-1 text-sm font-semibold text-blue-400">In Progress</span>
+            {% endif %}
+            <span class="text-sm text-gray-400">Duration: {{ module.duration_days }} days</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Module Description -->
+      <div class="bg-gray-800 rounded-3xl p-8 mb-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Overview</h2>
+        <p class="text-gray-300">{{ module.description }}</p>
+      </div>
+
+      <!-- Module Content -->
+      <div class="bg-gray-800 rounded-3xl p-8">
+        <h2 class="text-xl font-semibold text-white mb-6">Lesson Content</h2>
+        <div class="prose prose-invert max-w-none">
+          <div class="text-gray-300 whitespace-pre-line">{{ module.content }}</div>
+        </div>
+      </div>
+
+      <!-- Note about admin control -->
+      <div class="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-3xl p-6">
+        <div class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div>
+            <h3 class="text-white font-semibold mb-1">Progress Tracking</h3>
+            <p class="text-sm text-gray-400">Your course administrator will mark your progress as you complete each module. Continue learning and your progress will be updated accordingly.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
+</body>
+</html>

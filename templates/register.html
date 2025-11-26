@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      Sign up - Tegura Youth Initiative
+    </title>
+    <link rel="icon" href="{{ url_for('static', filename='images/Group 55.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+</head>
+<body class="h-full bg-gray-900">
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img src="{{ url_for('static', filename='images/Group 55.png') }}" alt="Company logo" class="mx-auto h-10 w-auto" />
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Create account</h2>
+  </div>
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-4 rounded-lg p-4 text-center font-medium {% if category == 'success' %}bg-green-500 text-white{% else %}bg-red-500 text-white{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+
+    <form action="{{ url_for('register') }}" method="POST" class="space-y-6"> <!--Where to navigate after POST request successful-->
+      {{ form.hidden_tag() }}
+
+      {{ form.firstname.label(class="block text-sm/6 font-medium text-gray-100") }}
+      <div class="mt-2">
+        {{ form.firstname(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='First Name') }}
+      </div>
+
+      {{ form.lastname.label(class="block text-sm/6 font-medium text-gray-100") }}
+      <div class="mt-2">
+        {{ form.lastname(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='Last Name') }}
+      </div>
+
+      {{ form.email.label(class="block text-sm/6 font-medium text-gray-100") }}
+      <div class="mt-2">
+        {{ form.email(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='Email Adress') }}
+      </div>
+
+      {{ form.password.label(class="block text-sm/6 font-medium text-gray-100") }}
+      <div class="mt-2">
+        {{ form.password(class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6", placeholder='Password') }}
+      </div>
+
+      {{ form.submit(class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500") }}
+
+    <p class="mt-10 text-center text-sm/6 text-gray-400">
+      Already have account?
+      <a href="{{ url_for('login') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Log into your account</a>
+    </p>
+  </div>
+</div>
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-16 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div>
+          <h3 class="text-white font-semibold mb-4">Contact Us</h3>
+          <p>Email: <a href="mailto:admin@principie.tech" class="hover:text-white">admin@principie.tech</a></p>
+          <p>Phone: <a href="https://wa.me/250798200584" class="hover:text-white">+250 798 200 584</a></p>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="{{ url_for('home')  }}" class="hover:text-white">Home</a></li>
+            <li><a href="{{ url_for('education')  }}" class="hover:text-white">Education Hub</a></li>
+            <li><a href="{{ url_for('leaderboard')  }}" class="hover:text-white">Leaderboard</a></li>
+            <li><a href="{{ url_for('messages')  }}" class="hover:text-white">Messages</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white">Documentation</a></li>
+            <li><a href="#" class="hover:text-white">Support</a></li>
+            <li><a href="#" class="hover:text-white">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="/" class="hover:text-white">About</a></li>
+            <li><a href="#" class="hover:text-white">Blog</a></li>
+            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-gray-700 pt-6 flex flex-col sm:flex-row justify-between items-center">
+        <div class="flex space-x-4 mb-4 sm:mb-0">
+          <a href="https://www.facebook.com/cyubahiro.principie" class="hover:text-white">Facebook</a>
+          <a href="https://www.instagram.com/cyubahiro_principie/?hl=en" class="hover:text-white">Instagram</a>
+          <a href="https://www.linkedin.com/in/principie" class="hover:text-white">LinkedIn</a>
+          <a href="https://www.github.com/PrincipieCyupe" class="hover:text-white">GitHub</a>
+        </div>
+
+        <p class="text-gray-500 text-sm">&copy; 2025 Tegura Youth Initiative. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

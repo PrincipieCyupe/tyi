@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Leaderboard - Tegura Youth Initiative
+{% endblock %}
+          
+{% block leaderboard %}
+  Leaderboard
+{% endblock %}
+
+{% block text %}
+  See how you rank among your peers in the Youth Innovation Challenge 2025. Track progress and celebrate achievements.
+{% endblock %}
+
+{% block highlight %}
+  <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white">Home</a>
+  <a href="{{ url_for('education') }}" class="text-sm/6 font-semibold text-white">Education</a>
+  <a href="{{ url_for('application') }}" class="text-sm/6 font-semibold text-white">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="text-sm/6 font-semibold text-indigo-400">Leaderboard</a>       
+  <a href="{{ url_for('messages') }}" class="text-sm/6 font-semibold text-white">Messages</a>
+{% endblock %}
+
+{% block new %}
+  <a href="{{ url_for('home') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Home</a>
+  <a href="{{ url_for('education') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Education</a>
+  <a href="{{ url_for('application') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-indigo-400 bg-white/5">Leaderboard</a>
+  <a href="{{ url_for('messages') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Messages</a>
+{% endblock %}
+
+
+{% block body %}
+
+<body class="bg-gray-900">
+  <!-- Header Navigation -->
+
+  <!-- Hero Section -->
+
+  <!-- Your Position -->
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-4xl">
+        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-3xl p-8">
+          {% if user_entry %}
+            <div class="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h2 class="text-2xl font-semibold text-white">Your Current Position</h2>
+                <p class="text-gray-400 mt-1">Keep up the great work!</p>
+              </div>
+              <div class="text-center">
+                <p class="text-5xl font-bold text-indigo-400">#{{ user_entry.rank }}</p>
+                <p class="text-sm text-gray-400 mt-1">of {{ total_participants }} participants</p>
+              </div>
+              <div class="text-center">
+                <p class="text-3xl font-bold text-white">{{ user_entry.total_points }}</p>
+                <p class="text-sm text-gray-400 mt-1">Total Points</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="text-center py-8">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-16 h-16 mx-auto text-gray-600 mb-4" aria-hidden="true">
+                <path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h2 class="text-2xl font-semibold text-white mb-2">Not Ranked Yet</h2>
+              <p class="text-gray-400">Complete courses and submit applications to join the leaderboard.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Table -->
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h2 class="text-center text-base font-semibold text-indigo-400">Competition Rankings</h2>
+      <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+        Top Performers
+      </p>
+
+      <div class="mt-16 bg-gray-800 rounded-3xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-900">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-white">Rank</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-white">Participant</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-white">Project</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-white">Location</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-white">Score</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+              {% if top_entries %}
+                {% for entry in top_entries %}
+                  <tr class="hover:bg-gray-700 transition {% if entry.user_id == current_user.id %}bg-indigo-500/10{% endif %}">
+                    <td class="px-6 py-4">
+                      <span class="flex items-center justify-center w-8 h-8 rounded-full {% if entry.rank == 1 %}bg-yellow-400 text-gray-900{% elif entry.rank == 2 %}bg-gray-400 text-gray-900{% elif entry.rank == 3 %}bg-orange-400 text-gray-900{% else %}bg-gray-600 text-white{% endif %} font-bold text-sm">
+                        {{ entry.rank }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-500 text-white font-semibold text-sm">
+                          {{ entry.user.get_initials() }}
+                        </div>
+                        <span class="text-white font-medium">{{ entry.user.get_full_name() }}</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400">{{ entry.project_name if entry.project_name else '—' }}</td>
+                    <td class="px-6 py-4 text-gray-400">{{ entry.location if entry.location else '—' }}</td>
+                    <td class="px-6 py-4">
+                      <span class="text-gray-300 font-bold">{{ entry.total_points }}</span>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="px-6 py-12 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-16 h-16 mx-auto text-gray-600 mb-4" aria-hidden="true">
+                      <path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p class="text-xl font-semibold text-white mb-2">No Rankings Yet</p>
+                    <p class="text-gray-400">Be the first to join the leaderboard!</p>
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-gray-400 text-sm">Showing top 10 and your position. Rankings update daily based on course completion and application progress.</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+  <!-- Footer -->
+
+
+</body>
+</html>

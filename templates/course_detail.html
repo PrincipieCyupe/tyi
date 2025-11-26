@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ course.title }} - Tegura Youth Initiative
+{% endblock %}
+
+{% block leaderboard %}
+  {{ course.title }}
+{% endblock %}
+
+{% block text %}
+  Track your progress and continue learning at your own pace.
+{% endblock %}
+
+{% block highlight %}
+  <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white">Home</a>
+  <a href="{{ url_for('education') }}" class="text-sm/6 font-semibold text-indigo-400">Education</a>
+  <a href="{{ url_for('application') }}" class="text-sm/6 font-semibold text-white">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="text-sm/6 font-semibold text-white">Leaderboard</a>       
+  <a href="{{ url_for('messages') }}" class="text-sm/6 font-semibold text-white">Messages</a>
+{% endblock %}
+
+{% block new %}
+  <a href="{{ url_for('home') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Home</a>
+  <a href="{{ url_for('education') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-indigo-400 bg-white/5">Education</a>
+  <a href="{{ url_for('application') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Leaderboard</a>
+  <a href="{{ url_for('messages') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Messages</a>
+{% endblock %}
+
+{% block body %}
+<body class="bg-gray-900">
+
+  <!-- Course Header -->
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-4xl">
+        <a href="{{ url_for('education') }}" class="text-indigo-400 hover:text-indigo-300 text-sm mb-4 inline-block">← Back to Education</a>
+        
+        <div class="bg-gray-800 rounded-3xl p-8 mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-3xl font-bold text-white mb-2">{{ course.title }}</h1>
+              <p class="text-gray-400">{{ course.description }}</p>
+            </div>
+            <span class="inline-flex items-center rounded-full bg-{% if enrollment.status == 'completed' %}green{% else %}blue{% endif %}-500/10 px-4 py-2 text-sm font-semibold text-{% if enrollment.status == 'completed' %}green{% else %}blue{% endif %}-400">
+              {{ enrollment.status.replace('_', ' ').title() }}
+            </span>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-6 mb-6">
+            <div class="text-center">
+              <p class="text-3xl font-bold text-white">{{ enrollment.progress_percentage }}%</p>
+              <p class="text-sm text-gray-400 mt-1">Progress</p>
+            </div>
+            <div class="text-center">
+              <p class="text-3xl font-bold text-indigo-400">{{ enrollment.completed_modules }}</p>
+              <p class="text-sm text-gray-400 mt-1">Modules Completed</p>
+            </div>
+            <div class="text-center">
+              <p class="text-3xl font-bold text-white">{{ course.total_modules }}</p>
+              <p class="text-sm text-gray-400 mt-1">Total Modules</p>
+            </div>
+          </div>
+          
+          <div class="w-full bg-gray-700 rounded-full h-4">
+            <div class="bg-indigo-500 h-4 rounded-full" style="width: {{ enrollment.progress_percentage }}%"></div>
+          </div>
+        </div>
+
+        <!-- Course Info -->
+        <div class="bg-gray-800 rounded-3xl p-6 mb-8">
+          <div class="flex items-center gap-6 text-sm text-gray-400">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>{{ course.duration_weeks }} weeks</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>{{ course.level }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+              <span>{{ course.total_modules }} modules</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules List -->
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="text-2xl font-bold text-white mb-8">Course Modules</h2>
+        
+        <div class="space-y-4">
+          {% for item in modules %}
+            <div class="bg-gray-800 rounded-3xl p-6 hover:bg-gray-700 transition">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-indigo-500/10 text-indigo-400 font-bold">
+                      {{ item.module.module_number }}
+                    </span>
+                    <div>
+                      <h3 class="text-lg font-semibold text-white">{{ item.module.title }}</h3>
+                      <p class="text-sm text-gray-400">{{ item.module.duration_days }} days</p>
+                    </div>
+                  </div>
+                  <p class="text-sm text-gray-400 mb-4">{{ item.module.description }}</p>
+                  
+                  {% if item.progress %}
+                    {% if item.progress.status == 'completed' %}
+                      <div class="flex items-center gap-2 text-green-400 text-sm">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Completed on {{ item.progress.completed_at.strftime('%B %d, %Y') if item.progress.completed_at else 'N/A' }}</span>
+                      </div>
+                    {% elif item.progress.status == 'in_progress' %}
+                      <span class="inline-flex items-center rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-400">In Progress</span>
+                    {% else %}
+                      <span class="inline-flex items-center rounded-full bg-gray-600 px-3 py-1 text-xs font-semibold text-gray-400">Not Started</span>
+                    {% endif %}
+                  {% endif %}
+                </div>
+                
+                <a href="{{ url_for('view_module', course_id=course.id, module_id=item.module.id) }}" class="ml-4 rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                  {% if item.progress and item.progress.status == 'completed' %}
+                    Review
+                  {% elif item.progress and item.progress.status == 'in_progress' %}
+                    Continue
+                  {% else %}
+                    Start
+                  {% endif %}
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+</body>
+</html>

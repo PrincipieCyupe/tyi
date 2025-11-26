@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Application Opportunities - Tegura Youth Initiative
+{% endblock %}
+
+{% block leaderboard %}
+  Application Opportunities
+{% endblock %}
+
+{% block text %}
+  Apply for funding and competition opportunities to grow your business.
+{% endblock %}
+
+{% block highlight %}
+  <a href="{{ url_for('home') }}" class="text-sm/6 font-semibold text-white">Home</a>
+  <a href="{{ url_for('education') }}" class="text-sm/6 font-semibold text-white">Education</a>
+  <a href="{{ url_for('application') }}" class="text-sm/6 font-semibold text-indigo-400">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="text-sm/6 font-semibold text-white">Leaderboard</a>       
+  <a href="{{ url_for('messages') }}" class="text-sm/6 font-semibold text-white">Messages</a>
+{% endblock %}
+
+{% block new %}
+  <a href="{{ url_for('home') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Home</a>
+  <a href="{{ url_for('education') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Education</a>
+  <a href="{{ url_for('application') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-indigo-400 bg-white/5">My Application</a>
+  <a href="{{ url_for('leaderboard') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Leaderboard</a>
+  <a href="{{ url_for('messages') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Messages</a>
+{% endblock %}
+
+{% block body %}
+<body class="bg-gray-900">
+
+  <!-- My Applications -->
+  {% if user_applications %}
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h2 class="text-center text-base font-semibold text-indigo-400">My Applications</h2>
+      <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl">Track your submissions</p>
+      
+      <div class="mt-16 max-w-4xl mx-auto space-y-6">
+        {% for app in user_applications %}
+          <div class="bg-gray-800 rounded-3xl p-8">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-xl font-semibold text-white">{{ app.competition_name }}</h3>
+                  <span class="inline-flex items-center rounded-full bg-{% if app.status == 'approved' %}green{% elif app.status == 'rejected' %}red{% elif app.status == 'under_review' %}yellow{% else %}blue{% endif %}-500/10 px-3 py-1 text-xs font-semibold text-{% if app.status == 'approved' %}green{% elif app.status == 'rejected' %}red{% elif app.status == 'under_review' %}yellow{% else %}blue{% endif %}-400">
+                    {{ app.status.replace('_', ' ').title() }}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-400 mb-2">Business: {{ app.business_name }}</p>
+                <p class="text-xs text-gray-500">Submitted: {{ app.submitted_at.strftime('%B %d, %Y') if app.submitted_at else 'Draft' }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-2xl font-bold text-indigo-400">{{ app.completion_percentage }}%</p>
+                <p class="text-xs text-gray-500">Complete</p>
+              </div>
+            </div>
+            
+            {% if app.admin_notes %}
+              <div class="mt-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                <p class="text-sm text-yellow-400"><strong>Admin Notes:</strong> {{ app.admin_notes }}</p>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Available Opportunities -->
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h2 class="text-center text-base font-semibold text-indigo-400">Open Opportunities</h2>
+      <p class="mx-auto mt-2 max-w-2xl text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl">Apply now</p>
+      
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% if opportunities %}
+          {% for opp in opportunities %}
+            <div class="bg-gray-800 rounded-3xl p-8 hover:scale-105 transition duration-300">
+              <div class="mb-4 flex size-12 items-center justify-center rounded-lg bg-indigo-500">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-6 text-white">
+                  <path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-white mb-2">{{ opp.title }}</h3>
+              <p class="text-gray-400 text-sm mb-4">{{ opp.description[:100] }}...</p>
+              
+              <div class="mb-4 space-y-2">
+                {% if opp.prize_amount %}
+                  <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Prize: {{ opp.prize_amount }}</span>
+                  </div>
+                {% endif %}
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span>Deadline: {{ opp.deadline.strftime('%b %d, %Y') }}</span>
+                </div>
+              </div>
+              
+              <a href="{{ url_for('apply_opportunity', opp_id=opp.id) }}" class="block w-full text-center rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                Apply Now
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-span-3 bg-gray-800 rounded-3xl p-12 text-center">
+            <h3 class="text-xl font-semibold text-white mb-2">No Open Opportunities</h3>
+            <p class="text-gray-400">Check back soon for new application opportunities!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+</body>
+</html>
