@@ -247,6 +247,42 @@ class ActivityUpdate(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
+@app.template_filter('kigali_time')
+def kigali_time_filter(dt):
+    """Convert UTC datetime to Kigali time for display"""
+    if dt is None:
+        return "Unknown"
+    
+    # If datetime is naive (no timezone), assume it's UTC
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    
+    # Convert to Kigali time
+    kigali_time = dt.astimezone(KIGALI_TZ)
+    
+    # Calculate time ago
+    now = datetime.now(KIGALI_TZ)
+    diff = now - kigali_time
+    
+    if diff.days > 0:
+        if diff.days == 1:
+            return "1 day ago"
+        else:
+            return f"{diff.days} days ago"
+    elif diff.seconds >= 3600:
+        hours = diff.seconds // 3600
+        if hours == 1:
+            return "1 hour ago"
+        else:
+            return f"{hours} hours ago"
+    elif diff.seconds >= 60:
+        minutes = diff.seconds // 60
+        if minutes == 1:
+            return "1 minute ago"
+        else:
+            return f"{minutes} minutes ago"
+    else:
+        return "Just now"
 
 # Create form for signing up
 class SignupForm(FlaskForm):
@@ -310,7 +346,7 @@ def send_password_reset_email(user_email, reset_token):
         if not user:
             return False
         
-        # Generate reset link (use your actual domain in production)
+        # Generate reset link
         reset_link = url_for('reset_password', token=reset_token, _external=True)
         
         email_subject = "Password Reset Request - Tegura Youth Initiative"
@@ -352,7 +388,7 @@ def send_password_reset_email(user_email, reset_token):
                 </div>
                 
                 <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px;">
-                    <p>© 2024 Tegura Youth Initiative. All rights reserved.</p>
+                    <p>© 2025 Tegura Youth Initiative. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -435,9 +471,9 @@ def forgot_password():
             # Generate reset token
             reset_token = generate_reset_token()
             
-            # Set token expiry (1 hour from now)
+            # Set token expiry (1 hour from now) - USE UTC FOR CONSISTENCY
             user.reset_token = reset_token
-            user.reset_token_expiry = datetime.now(KIGALI_TZ) + timedelta(hours=1)
+            user.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)  # Changed to UTC
             
             db.session.commit()
             
@@ -454,7 +490,6 @@ def forgot_password():
     
     return render_template('forgot_password.html')
 
-
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     # Find user with this token
@@ -465,17 +500,8 @@ def reset_password(token):
         flash('Invalid or expired reset link.', 'danger')
         return redirect(url_for('login'))
     
-    # Check if token expired (FIX: Make both datetimes timezone-aware)
-    now = datetime.now(KIGALI_TZ)
-    
-    # Convert stored expiry to timezone-aware if it's naive
-    if user.reset_token_expiry.tzinfo is None:
-        # It's naive, make it aware by assuming it's in KIGALI_TZ
-        expiry = user.reset_token_expiry.replace(tzinfo=KIGALI_TZ)
-    else:
-        expiry = user.reset_token_expiry
-    
-    if now > expiry:
+    # Check if token expired - USE UTC FOR CONSISTENCY
+    if datetime.utcnow() > user.reset_token_expiry:  # Changed to UTC
         flash('Reset link has expired. Please request a new one.', 'danger')
         return redirect(url_for('forgot_password'))
     
@@ -574,13 +600,13 @@ def contact_form():
         if not all([first_name, last_name, email, message]):
             print("❌ Missing required fields")
             flash('Please fill in all required fields.', 'danger')
-            return redirect(url_for('index_page'))
+            return redirect(url_for('index_page') + '#contact')  # Redirect to contact section
         
         # Check if API key exists
         if not SENDGRID_API_KEY:
             print("❌ ERROR: SENDGRID_API_KEY is not set!")
             flash('Email service is not configured. Please contact support.', 'danger')
-            return redirect(url_for('index_page'))
+            return redirect(url_for('index_page') + '#contact')
         
         print(f"✅ API Key is set: {SENDGRID_API_KEY[:15]}...")
         print(f"✅ From email: {SENDGRID_FROM_EMAIL}")
@@ -654,8 +680,6 @@ def contact_form():
         response = sg.send(email_message)
         
         print(f"✅ SendGrid Response Status: {response.status_code}")
-        print(f"✅ SendGrid Response Body: {response.body}")
-        print(f"✅ SendGrid Response Headers: {response.headers}")
         
         if response.status_code in [200, 201, 202]:
             print("✅ Email sent successfully!")
@@ -666,12 +690,9 @@ def contact_form():
             
     except Exception as e:
         print(f"❌ ERROR sending email: {str(e)}")
-        print(f"❌ Error type: {type(e).__name__}")
-        import traceback
-        print(f"❌ Full traceback:\n{traceback.format_exc()}")
         flash('There was an error sending your message. Please try again.', 'danger')
     
-    return redirect(url_for('index_page'))
+    return redirect(url_for('index_page') + '#contact')  # Redirect back to contact section
 
 @app.route('/course/enroll/<int:course_id>', methods=['POST'])
 @login_required
