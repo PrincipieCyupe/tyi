@@ -444,11 +444,18 @@ def register():
     form = SignupForm()
     if form.validate_on_submit():
         try:
+            # Check if email already exists (redundant check for clarity)
+            existing_user = TYI.query.filter_by(email=form.email.data).first()
+            if existing_user:
+                flash('Email address already exists! Please try a different email.', 'danger')
+                return render_template('register.html', form=form)
+            
             user = TYI(
                 firstname=form.firstname.data,
                 lastname=form.lastname.data,
                 email=form.email.data,
-                pwd=form.password.data)
+                pwd=form.password.data
+            )
             db.session.add(user)
             db.session.commit()
             flash('Account created successfully!', 'success')
@@ -456,6 +463,12 @@ def register():
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating account: {str(e)}', 'danger')
+    else:
+        # NEW: Show validation errors as flash messages
+        if form.errors:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{error}', 'danger')
     
     return render_template('register.html', form=form)
 
