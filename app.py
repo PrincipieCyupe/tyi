@@ -502,6 +502,94 @@ def send_verification_email(user_email, verification_token):
         print(f"❌ Error sending verification email: {str(e)}")
         return False
 
+def send_certificate_request_email(user_email, user_name, course_title):
+    """Send certificate request notification to admin"""
+    try:
+        email_subject = f"Certificate Request - {user_name} for {course_title}"
+        
+        email_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <h2 style="color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 10px;">
+                     Certificate Request
+                </h2>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h3 style="color: #374151; margin-top: 0;">New Certificate Request</h3>
+                    
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: bold; width: 150px;">Student Name:</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{user_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: bold;">Student Email:</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                                <a href="mailto:{user_email}" style="color: #6366f1;">{user_email}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: bold;">Course Completed:</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{course_title}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: bold;">Request Date:</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{datetime.now(KIGALI_TZ).strftime('%B %d, %Y at %I:%M %p')}</td>
+                        </tr>
+                    </table>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background-color: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 4px;">
+                        <p style="margin: 0; color: #92400e; font-weight: bold;"> Action Required</p>
+                        <p style="margin: 5px 0 0 0; color: #92400e;">Please prepare and send the certificate within 7 days maximum.</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background-color: #dbeafe; border-left: 4px solid #3b82f6; border-radius: 4px;">
+                        <p style="margin: 0; color: #1e40af; font-weight: bold;"> Student Details for Certificate:</p>
+                        <p style="margin: 5px 0 0 0; color: #1e40af;">
+                            <strong>Full Name:</strong> {user_name}<br>
+                            <strong>Email:</strong> {user_email}<br>
+                            <strong>Course:</strong> {course_title}
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #e0e7ff; border-radius: 5px; text-align: center;">
+                    <p style="margin: 0; color: #4f46e5; font-size: 14px;">
+                        📧 Sent from Tegura Youth Initiative Platform
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Send email via SendGrid
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        
+        email_message = Mail(
+            from_email=SENDGRID_FROM_EMAIL,
+            to_emails='admin@principie.tech',
+            subject=email_subject,
+            html_content=email_body
+        )
+        
+        # Set reply-to as the student's email for easy communication
+        email_message.reply_to = user_email
+        
+        response = sg.send(email_message)
+        
+        if response.status_code in [200, 201, 202]:
+            print(f"✅ Certificate request sent for {user_name} - Course: {course_title}")
+            return True
+        else:
+            print(f"⚠️ Failed to send certificate request: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error sending certificate request: {str(e)}")
+        return False
+
 @app.route('/', methods=['POST', 'GET'])
 def index_page():
     return render_template('index.html')
@@ -958,6 +1046,36 @@ def education():
                          in_progress_count=in_progress_count,
                          overall_progress=overall_progress,
                          available_courses=available_courses)
+
+@app.route('/request-certificate/<int:course_id>', methods=['POST'])
+@login_required
+def request_certificate(course_id):
+    """Request certificate for completed course"""
+    # Verify user completed the course
+    user_course = UserCourse.query.filter_by(
+        user_id=current_user.id,
+        course_id=course_id,
+        status='completed'
+    ).first()
+    
+    if not user_course:
+        flash('You can only request certificates for completed courses.', 'danger')
+        return redirect(url_for('education'))
+    
+    # Get course details
+    course = Course.query.get_or_404(course_id)
+    
+    # Send certificate request email to admin
+    if send_certificate_request_email(
+        user_email=current_user.email,
+        user_name=current_user.get_full_name(),
+        course_title=course.title
+    ):
+        flash('Certificate request sent! Expect your certificate within 7 days maximum.', 'success')
+    else:
+        flash('Failed to send certificate request. Please try again or contact admin@principie.tech directly.', 'danger')
+    
+    return redirect(url_for('education'))
 
 @app.route('/home/leaderboard')
 @login_required

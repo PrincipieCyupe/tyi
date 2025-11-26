@@ -168,7 +168,11 @@
               <p class="text-gray-400 text-sm mb-6">{{ user_course.course.description }}</p>
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-400">Completed on {{ user_course.completed_at.strftime('%B %d, %Y') if user_course.completed_at else 'N/A' }}</span>
-                <a href="mailto:admin@principie.tech" class="text-indigo-400 hover:text-indigo-300 font-semibold text-sm">Get Certificate <span aria-hidden="true">→</span></a>
+                <form action="{{ url_for('request_certificate', course_id=user_course.course.id) }}" method="POST" style="display: inline;">
+                  <button type="submit" class="text-indigo-400 hover:text-indigo-300 font-semibold text-sm bg-transparent border-none cursor-pointer hover:underline">
+                    Get Certificate <span aria-hidden="true">→</span>
+                  </button>
+                </form>
               </div>
             </div>
           {% endfor %}
