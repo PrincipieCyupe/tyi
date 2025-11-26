@@ -247,16 +247,6 @@ class ActivityUpdate(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
-# Database initialization function
-def init_db():
-    """Initialize database tables on first deployment"""
-    with app.app_context():
-        try:
-            db.create_all()
-            print("Database tables created successfully!")
-            print("All tables are created.")
-        except Exception as e:
-            print(f"Error creating tables: {str(e)}")
 
 # Create form for signing up
 class SignupForm(FlaskForm):
@@ -1637,6 +1627,13 @@ def admin_leaderboard():
     
     entries = LeaderboardEntry.query.order_by(LeaderboardEntry.rank).all()
     return render_template('admin_leaderboard.html', entries=entries)
+
+with app.app_context():
+    try:
+        db.create_all()
+        print("✅ Database tables initialized successfully!")
+    except Exception as e:
+        print(f"⚠️ Database initialization info: {str(e)}")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
