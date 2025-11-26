@@ -1830,6 +1830,63 @@ def admin_leaderboard():
     entries = LeaderboardEntry.query.order_by(LeaderboardEntry.rank).all()
     return render_template('admin_leaderboard.html', entries=entries)
 
+@app.route('/nuclear-reset-database-now')
+def nuclear_reset_database():
+    """
+    DANGER ZONE: Deletes ALL data and recreates database from scratch
+    Only works when you set the special environment variable
+    """
+    # Safety check - only works if you set a special env variable
+    reset_password = os.environ.get('ALLOW_DATABASE_RESET')
+    provided_password = request.args.get('password')
+    
+    if not reset_password or provided_password != reset_password:
+        return "❌ Not authorized. Set ALLOW_DATABASE_RESET environment variable and provide ?password=YOUR_PASSWORD", 403
+    
+    try:
+        print("🚨 STARTING DATABASE RESET - ALL DATA WILL BE DELETED!")
+        
+        # Drop all tables
+        db.drop_all()
+        print("✅ All tables dropped")
+        
+        # Recreate all tables with new structure
+        db.create_all()
+        print("✅ All tables recreated with new structure")
+        
+        return """
+        <html>
+        <body style="font-family: Arial; padding: 40px; background: #1f2937; color: white;">
+            <h1>✅ Database Reset Complete!</h1>
+            <p style="font-size: 18px;">All tables have been deleted and recreated.</p>
+            <p style="font-size: 18px;">New structure includes email verification columns.</p>
+            <hr style="border-color: #4b5563; margin: 30px 0;">
+            <h2>🎯 What to do next:</h2>
+            <ol style="font-size: 16px; line-height: 2;">
+                <li>Remove the ALLOW_DATABASE_RESET environment variable from Render</li>
+                <li>Delete this route from your code</li>
+                <li>Test registration with email verification</li>
+                <li>Start fresh with clean data!</li>
+            </ol>
+            <p style="margin-top: 40px; padding: 20px; background: #dc2626; border-radius: 8px;">
+                <strong>⚠️ IMPORTANT:</strong> Delete this route from your code and remove the environment variable NOW for security!
+            </p>
+        </body>
+        </html>
+        """, 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return f"""
+        <html>
+        <body style="font-family: Arial; padding: 40px; background: #1f2937; color: white;">
+            <h1>❌ Database Reset Failed</h1>
+            <p style="font-size: 18px; color: #ef4444;">Error: {str(e)}</p>
+            <p>Check the Render logs for more details.</p>
+        </body>
+        </html>
+        """, 500
+
 with app.app_context():
     try:
         db.create_all()
